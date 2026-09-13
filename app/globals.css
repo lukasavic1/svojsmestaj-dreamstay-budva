@@ -1,28 +1,69 @@
-html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
+@import "tailwindcss";
+
+:root {
+  --paper: #f7f4ef;
+  --paper-deep: #f1ebe1;
+  --terra: #c4703f;
+  --sage: #7c8b6f;
+  --ink: #3a352f;
+  --muted: #6b6255;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-terra: var(--terra);
+  --color-sage: var(--sage);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
-    sans-serif;
-  color: #1f2421;
-  background: #ffffff;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-main {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  text-align: center;
+h1,
+h2,
+h3 {
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  text-wrap: balance;
 }
 
-h1 {
-  margin: 0;
-  font-size: clamp(1.5rem, 5vw, 2.5rem);
-  font-weight: 600;
+::selection {
+  background: color-mix(in srgb, var(--terra) 32%, white);
+  color: var(--ink);
+}
+
+img {
+  max-width: 100%;
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
