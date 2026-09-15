@@ -20,9 +20,12 @@ export function AboutSection() {
               <p key={para.slice(0, 24)}>{para}</p>
             ))}
           </div>
-          <div className="mt-8 flex flex-wrap gap-2">
+          <div className="mt-8 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             {copy.about.pills.map((pill) => (
-              <span key={pill.id} className="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold tracking-wide uppercase">
+              <span
+                key={pill.id}
+                className="rounded-full border border-white/20 px-4 py-2.5 text-center text-xs font-semibold tracking-wide uppercase sm:py-2 sm:text-left"
+              >
                 {pill.label}
               </span>
             ))}

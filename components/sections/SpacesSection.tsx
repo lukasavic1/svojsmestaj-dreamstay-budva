@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { copy } from "@/data/copy";
 import { spaces } from "@/data/content";
 import { photos } from "@/data/media";
 import { Section, SectionHead } from "@/components/ui/Section";
-import { easeOutExpo } from "@/lib/motion";
+
+const accordionEase = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 export function SpacesSection() {
   const [active, setActive] = useState<(typeof spaces)[number]["id"]>("bedroom");
@@ -92,53 +93,64 @@ export function SpacesSection() {
         {spaces.map((space) => {
           const expanded = space.id === active;
           return (
-            <motion.button
-              key={space.id}
-              type="button"
-              layout
-              onClick={() => setActive(space.id)}
-              transition={{ layout: { duration: 0.38, ease: easeOutExpo } }}
-              className="overflow-hidden rounded-[1.5rem] text-left"
-            >
-              <motion.span
-                layout
-                className={`relative block overflow-hidden ${expanded ? "aspect-[16/11]" : "aspect-[16/7]"}`}
+            <div key={space.id} className="overflow-hidden rounded-[1.5rem]">
+              <button
+                type="button"
+                aria-expanded={expanded}
+                onClick={() => setActive(space.id)}
+                className="w-full text-left"
               >
-                <Image src={photos[space.img]} alt={space.title} fill sizes="100vw" className="object-cover" />
-                <span
-                  className={`absolute inset-0 transition-colors duration-300 ${
-                    expanded ? "bg-sea/20" : "bg-sea/50"
-                  }`}
-                />
-                <span className="absolute bottom-4 left-4 font-display text-2xl text-white">{space.title}</span>
-              </motion.span>
-              <AnimatePresence initial={false}>
-                {expanded ? (
-                  <motion.span
-                    key={`${space.id}-body`}
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.32, ease: easeOutExpo }}
-                    className="block overflow-hidden bg-paper-deep"
+                <span className="relative block aspect-[16/10] overflow-hidden">
+                  <Image
+                    src={photos[space.img]}
+                    alt={space.title}
+                    fill
+                    sizes="100vw"
+                    className={`object-cover transition-transform duration-700 ease-out ${
+                      expanded ? "scale-100" : "scale-105"
+                    }`}
+                  />
+                  <span
+                    className={`absolute inset-0 transition-colors duration-700 ${
+                      expanded ? "bg-sea/20" : "bg-sea/50"
+                    }`}
+                  />
+                  <span className="absolute bottom-4 left-4 font-display text-2xl text-white">{space.title}</span>
+                </span>
+              </button>
+              <div
+                className="grid"
+                style={{
+                  gridTemplateRows: expanded ? "1fr" : "0fr",
+                  transition: `grid-template-rows 0.7s ${accordionEase}`,
+                }}
+              >
+                <div className="min-h-0 overflow-hidden">
+                  <div
+                    className="bg-paper-deep px-4 py-4"
+                    style={{
+                      opacity: expanded ? 1 : 0,
+                      transform: expanded ? "translateY(0)" : "translateY(-6px)",
+                      transition: expanded
+                        ? `opacity 0.5s ${accordionEase} 0.12s, transform 0.5s ${accordionEase} 0.12s`
+                        : `opacity 0.28s ${accordionEase}, transform 0.28s ${accordionEase}`,
+                    }}
                   >
-                    <span className="block px-4 py-4">
-                      <span className="block text-sm leading-relaxed text-muted">{space.text}</span>
-                      <span className="mt-3 flex flex-wrap gap-2">
-                        {space.features.map((feature) => (
-                          <span
-                            key={feature.label}
-                            className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold"
-                          >
-                            {feature.label}
-                          </span>
-                        ))}
-                      </span>
-                    </span>
-                  </motion.span>
-                ) : null}
-              </AnimatePresence>
-            </motion.button>
+                    <p className="text-sm leading-relaxed text-muted">{space.text}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {space.features.map((feature) => (
+                        <span
+                          key={feature.label}
+                          className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold"
+                        >
+                          {feature.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           );
         })}
       </div>
