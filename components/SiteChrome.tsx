@@ -10,7 +10,7 @@ import { FloatingBookingButton } from "@/components/ui/FloatingBookingButton";
 export function SiteChrome({ children }: { children: ReactNode }) {
   return (
     <SiteProvider>
-      <div id="top" className="min-h-dvh bg-paper pt-[4.5rem]">
+      <div id="top" className="min-h-dvh overflow-x-hidden bg-paper pb-8 md:pb-0">
         <SiteHeader />
         {children}
         <SiteFooter />

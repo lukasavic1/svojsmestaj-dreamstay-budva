@@ -9,7 +9,6 @@ import { HeroSection } from "@/components/sections/HeroSection";
 import { InquirySection } from "@/components/sections/InquirySection";
 import { LocationSection } from "@/components/sections/LocationSection";
 import { MomentsSection } from "@/components/sections/MomentsSection";
-import { NearbySection } from "@/components/sections/NearbySection";
 import { SpacesSection } from "@/components/sections/SpacesSection";
 import { SiteChrome } from "@/components/SiteChrome";
 
@@ -21,9 +20,8 @@ export function PropertySite() {
         <SpacesSection />
         <AboutSection />
         <MomentsSection />
-        <AmenitiesSection />
         <GallerySection />
-        <NearbySection />
+        <AmenitiesSection />
         <LocationSection />
         <FirstGuestsSection />
         <InquirySection />

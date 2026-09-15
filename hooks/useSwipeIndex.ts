@@ -7,11 +7,12 @@ type Options = {
   onSwipe: (direction: 1 | -1) => void;
   threshold?: number;
   onInteract?: () => void;
+  onTap?: (event: PointerEvent) => void;
 };
 
 export function useSwipeIndex(
   ref: RefObject<HTMLElement | null>,
-  { count, onSwipe, threshold = 48, onInteract }: Options,
+  { count, onSwipe, threshold = 48, onInteract, onTap }: Options,
 ) {
   useEffect(() => {
     const el = ref.current;
@@ -71,8 +72,13 @@ export function useSwipeIndex(
       } catch {
         /* ignore */
       }
-      if (!wasHorizontal || Math.abs(dx) < threshold) return;
-      onSwipe(dx < 0 ? 1 : -1);
+      if (wasHorizontal && Math.abs(dx) >= threshold) {
+        onSwipe(dx < 0 ? 1 : -1);
+        return;
+      }
+      if (!wasHorizontal && Math.abs(dx) < 12 && Math.abs(e.clientY - startY) < 12) {
+        onTap?.(e);
+      }
     };
 
     el.addEventListener("pointerdown", onDown);
@@ -86,5 +92,5 @@ export function useSwipeIndex(
       el.removeEventListener("pointerup", end);
       el.removeEventListener("pointercancel", end);
     };
-  }, [ref, count, onSwipe, threshold, onInteract]);
+  }, [ref, count, onSwipe, threshold, onInteract, onTap]);
 }

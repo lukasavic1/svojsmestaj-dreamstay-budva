@@ -21,7 +21,14 @@ export function BookingModal() {
 
   return (
     <>
-      <Modal open={bookingOpen} title={copy.booking.heading} onClose={closeBooking} closeLabel={copy.booking.close} wide>
+      <Modal
+        open={bookingOpen}
+        title={copy.booking.heading}
+        onClose={closeBooking}
+        closeLabel={copy.booking.close}
+        titleHidden
+        wide
+      >
         <BookingForm onSubmitted={handleSubmitted} onCancel={closeBooking} />
       </Modal>
       <BookingSuccessModal open={Boolean(receipt)} receipt={receipt} onClose={() => setReceipt(null)} />

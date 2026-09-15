@@ -12,59 +12,55 @@ export function InquirySection() {
   const { openBooking } = useSite();
 
   return (
-    <Section id="upit">
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
-        <div className="rounded-[2rem] bg-white p-6 shadow-sm lg:p-8">
-          <p className="text-[11px] font-bold tracking-[0.18em] text-terra uppercase">{copy.inquiry.kicker}</p>
-          <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight lg:text-3xl">{copy.inquiry.heading}</h2>
-          <p className="mt-2 text-sm text-muted">{copy.inquiry.lead}</p>
-          <button
-            type="button"
-            onClick={openBooking}
-            className="mt-8 flex min-h-12 w-full items-center justify-center rounded-full bg-terra text-sm font-bold text-white sm:w-auto sm:px-10"
-          >
-            {copy.inquiry.cta}
-          </button>
-        </div>
-        <aside className="h-fit rounded-[2rem] bg-white p-6 shadow-sm lg:sticky lg:top-24">
-          <p className="text-[11px] font-bold tracking-wide text-muted uppercase">{copy.inquiry.fromLabel}</p>
-          <p className="font-display text-3xl font-semibold text-terra">{copy.inquiry.fromValue}</p>
-          <p className="text-sm text-muted">{copy.inquiry.fromHint}</p>
-          <ul className="mt-5 space-y-2 text-sm text-muted">
+    <Section id="upit" className="bg-paper-deep">
+      <div className="overflow-hidden rounded-[2rem] bg-white shadow-[0_24px_50px_-32px_rgba(43,58,65,0.28)] lg:grid lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="p-6 lg:p-10">
+          <p className="text-[11px] font-semibold tracking-[0.22em] text-terra uppercase">{copy.inquiry.kicker}</p>
+          <h2 className="mt-3 font-display text-2xl leading-tight text-sea sm:text-4xl">{copy.inquiry.heading}</h2>
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">{copy.inquiry.lead}</p>
+          <ul className="mt-6 space-y-2 text-sm text-muted">
             {inquiryPerks.map((label) => (
               <li key={label} className="flex gap-2">
-                <span className="text-sage">✓</span>
+                <span className="text-terra">✓</span>
                 {label}
               </li>
             ))}
           </ul>
-          {hasWhatsApp() ? (
-            <a
-              href={whatsappHref()}
-              className="mt-5 flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-terra text-sm font-bold text-white"
-            >
-              <WhatsAppIcon className="h-6 w-6" />
-              {copy.contact.whatsappCta}
-            </a>
-          ) : (
-            <button
-              type="button"
-              onClick={openBooking}
-              className="mt-5 flex min-h-12 w-full items-center justify-center rounded-full bg-terra text-sm font-bold text-white"
-            >
-              {copy.inquiry.cta}
-            </button>
-          )}
-          {hasHostPhone() ? (
-            <a
-              href={telHref()}
-              className="mt-2 flex min-h-12 w-full items-center justify-center gap-2 rounded-full border-2 border-terra text-sm font-bold text-terra"
-            >
-              <Phone className="h-4 w-4" /> {copy.contact.callCta}
-            </a>
-          ) : (
-            <p className="mt-3 text-xs leading-relaxed text-muted">{copy.contact.pending}</p>
-          )}
+          <button
+            type="button"
+            onClick={openBooking}
+            className="mt-8 inline-flex min-h-12 items-center rounded-full bg-terra px-8 text-sm font-semibold text-white hover:bg-terra-deep"
+          >
+            {copy.inquiry.cta}
+          </button>
+        </div>
+        <aside className="flex flex-col justify-between bg-sea p-6 text-paper lg:p-10">
+          <div>
+            <p className="text-[11px] font-semibold tracking-wide text-paper/55 uppercase">{copy.inquiry.fromLabel}</p>
+            <p className="mt-2 font-display text-3xl sm:text-4xl">{copy.inquiry.fromValue}</p>
+            <p className="mt-2 text-sm text-paper/70">{copy.inquiry.fromHint}</p>
+          </div>
+          <div className="mt-8 space-y-2">
+            {hasWhatsApp() ? (
+              <a
+                href={whatsappHref()}
+                className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-terra text-sm font-semibold"
+              >
+                <WhatsAppIcon className="h-5 w-5" />
+                {copy.contact.whatsappCta}
+              </a>
+            ) : null}
+            {hasHostPhone() ? (
+              <a
+                href={telHref()}
+                className="flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/25 text-sm font-semibold"
+              >
+                <Phone className="h-4 w-4" /> {copy.contact.callCta}
+              </a>
+            ) : (
+              <p className="text-xs leading-relaxed text-paper/65">{copy.contact.pending}</p>
+            )}
+          </div>
         </aside>
       </div>
     </Section>

@@ -1,36 +1,44 @@
 "use client";
 
+import Image from "next/image";
 import { copy } from "@/data/copy";
 import { photos } from "@/data/media";
 import { useSite } from "@/components/providers/SiteProvider";
 import { Section } from "@/components/ui/Section";
-import { RingPhoto } from "@/components/ui/RingPhoto";
 
 export function FirstGuestsSection() {
   const { openBooking } = useSite();
 
   return (
-    <Section id="boravak" className="bg-paper-deep">
-      <article className="mx-auto max-w-3xl rounded-[2rem] bg-white p-6 shadow-[0_16px_40px_-30px_rgba(58,53,47,0.55)] lg:p-10">
-        <p className="text-[11px] font-bold tracking-[0.18em] text-terra uppercase">{copy.firstGuests.kicker}</p>
-        <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight lg:text-4xl">{copy.firstGuests.heading}</h2>
-        <p className="mt-4 text-sm leading-relaxed text-muted lg:text-base">{copy.firstGuests.lead}</p>
-        <div className="mt-6 flex flex-wrap items-center gap-4">
-          <RingPhoto src={photos.balconySunset} alt="Balkon u zlatnom satu" />
+    <Section id="boravak">
+      <article className="relative overflow-hidden rounded-[2rem] bg-sea text-paper">
+        <div className="absolute inset-y-0 right-0 hidden w-1/2 lg:block">
+          <Image
+            src={photos.balconySunset}
+            alt="Balkon u zlatnom satu"
+            fill
+            sizes="50vw"
+            className="object-cover opacity-70"
+          />
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent to-sea" />
+        </div>
+        <div className="relative max-w-xl px-6 py-12 lg:px-12 lg:py-16">
+          <p className="text-[11px] font-semibold tracking-[0.22em] text-terra uppercase">{copy.firstGuests.kicker}</p>
+          <h2 className="mt-3 font-display text-2xl leading-tight sm:text-4xl lg:text-5xl">{copy.firstGuests.heading}</h2>
+          <p className="mt-4 text-sm leading-relaxed text-paper/75 lg:text-base">{copy.firstGuests.lead}</p>
+          <span className="mt-6 inline-flex rounded-full border border-white/20 px-3 py-1 text-[10px] font-semibold tracking-wide uppercase">
+            {copy.firstGuests.badge}
+          </span>
           <div>
-            <span className="inline-flex rounded-full bg-sage px-3 py-1 text-[10px] font-bold tracking-wide text-white uppercase">
-              {copy.firstGuests.badge}
-            </span>
-            <p className="mt-2 text-sm font-bold">Dream Stay · Babilonija</p>
+            <button
+              type="button"
+              onClick={openBooking}
+              className="mt-8 inline-flex min-h-12 items-center rounded-full bg-terra px-6 text-sm font-semibold text-white hover:bg-terra-deep"
+            >
+              {copy.firstGuests.cta}
+            </button>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={openBooking}
-          className="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-terra px-6 text-sm font-bold text-white"
-        >
-          {copy.firstGuests.cta}
-        </button>
       </article>
     </Section>
   );

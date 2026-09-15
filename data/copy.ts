@@ -2,6 +2,7 @@ export const copy = {
   nav: {
     about: "O stanu",
     spaces: "Prostor",
+    experiences: "Iskustva",
     amenities: "Pogodnosti",
     gallery: "Galerija",
     nearby: "Okolina",
@@ -18,8 +19,29 @@ export const copy = {
     lead: "Toplo drvo, bež lan i balkon pod brdima. Ujutru kafa na terasi, pa niz ulicu do Slovenske — bez taksija, bez žurbe.",
     ctaPrimary: "Provjeri termine",
     ctaSecondary: "Pogledaj prostor",
-    chipWalk: "6–10 min hoda",
-    chipBeach: "Slovenska plaža",
+    chipWalk: "6–10 min do mora",
+    chipBeach: "Terasa pod brdima",
+    previewHint: "Pogledaj prostor",
+  },
+  galleryFilters: {
+    all: "Sve",
+    morning: "Jutro",
+    day: "Dan",
+    golden: "Zlatni sat",
+  },
+  galleryTimes: {
+    morning: "08:00",
+    day: "13:00",
+    golden: "18:30",
+  },
+  locationToggle: {
+    map: "Mapa",
+    photos: "Fotke naselja",
+    list: "Lista",
+  },
+  stickyBook: {
+    title: "Rezervišite termine",
+    hint: "Prijava 15:00 · min. 2 noći",
   },
   stats: {
     bedroom: "Spavaća soba",
@@ -32,8 +54,8 @@ export const copy = {
     heading: "Babilonija između brda i mora",
     body: [
       "Dobrodošli u Dream Stay — svijetao apartman u Babiloniji, malo u unutrašnjosti od Slovenske plaže. Nismo vila na obali ni kamp u šumi. Tu smo zato što možete sami kuvati, sjesti na balkon kad sunce padne na brda, i za deset minuta biti u pijesku.",
-      "Jedna spavaća soba sa bračnim krevetom i visokim svjetlom. Otvoreni dnevni boravak sa ugaonom garniturom, trpezarijom i kuhinjom. Kupatilo sa tušem i mašinom za veš. Terasa sa sjedištem — večeri su za to.",
-      "Zgrada ima lift i parking. Kućni ljubimci su dobrodošli. Stan je nenapušen. Ako tražite tišu noć od špica, a plažu i stari grad i dalje pješke — ovo je ta adresa.",
+      "Jedna spavaća soba sa bračnim krevetom i visokim svjetlom. Otvoreni dnevni boravak sa ugaonom garniturom, trpezarijom i kuhinjom. Kupatilo sa tušem i mašinom za veš. Balkon pod brdima — večeri su za to.",
+      "Zgrada ima lift i parking. Kućni ljubimci su dobrodošli. Puši se samo napolju. Ako tražite tišu noć od špica, a plažu i stari grad i dalje pješke — ovo je ta adresa.",
     ],
     pills: [
       { id: "rooms", label: "1 spavaća · otvoreni dnevni" },
@@ -47,9 +69,10 @@ export const copy = {
     lead: "Spavate u svjetlu, kuvate u dnevnom, večerate na balkonu dok brda pocrvene.",
   },
   moments: {
-    kicker: "Dan u Budvi",
-    heading: "Trenuci koji se ne naplaćuju",
-    lead: "Nema dodatnih paketa. Ima šetnje, terase i kuhinje koju ostavljamo spremnu.",
+    kicker: "Iskustva u Budvi",
+    heading: "Sve pješke od stana",
+    lead: "Plaža, zidine i šetalište — bez taksija i bez lova na parking. Stan je baza, Budva je šetnja.",
+    credit: "Fotografije Budve: Wikimedia Commons (javni domen i CC BY-SA).",
   },
   amenities: {
     kicker: "Pogodnosti",
@@ -59,12 +82,18 @@ export const copy = {
   gallery: {
     kicker: "Galerija",
     heading: "Stan kroz dan",
-    lead: "Unutra lan i drvo. Napolju terakota i brda.",
+    lead: "Pogledajte kako svjetlo i atmosfera mijenjaju prostor od jutra do večeri.",
     open: "Otvori fotografiju",
     more: "Još {n} fotografija",
     prev: "Prethodna fotografija",
     next: "Sljedeća fotografija",
     close: "Zatvori",
+    enlarge: "Uvećaj fotografiju",
+    play: "Pokreni automatsku reprodukciju",
+    pause: "Pauziraj",
+    zoomIn: "Uvećaj",
+    zoomOut: "Umanji",
+    of: "od",
   },
   nearby: {
     kicker: "Okolina",

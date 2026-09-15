@@ -1,127 +1,215 @@
 "use client";
 
+import { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowDown, Sun } from "lucide-react";
+import { ArrowDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { copy } from "@/data/copy";
 import { heroStats, highlights } from "@/data/content";
 import { photos } from "@/data/media";
 import { useSite } from "@/components/providers/SiteProvider";
-import { RingPhoto } from "@/components/ui/RingPhoto";
-import { fadeInUp, stagger } from "@/lib/motion";
+import { easeOutExpo } from "@/lib/motion";
+import { site } from "@/data/site";
+import { useSwipeIndex } from "@/hooks/useSwipeIndex";
 
-export function StoryChips() {
+function HeroMedia({ preview }: { preview: (typeof highlights)[number]["id"] }) {
   return (
-    <div className="flex gap-3 overflow-x-auto px-4 py-4 md:hidden">
+    <>
       {highlights.map((item) => (
-        <a key={item.id} href={`#${item.target}`} className="flex w-16 shrink-0 flex-col items-center gap-1.5">
-          <RingPhoto src={photos[item.img]} alt={item.label} size="sm" />
-          <span className="w-16 truncate text-center text-[10px] font-bold">{item.label}</span>
-        </a>
+        <motion.div
+          key={item.img}
+          className="absolute inset-0"
+          initial={false}
+          animate={{ opacity: item.id === preview ? 1 : 0 }}
+          transition={{ duration: 0.85, ease: easeOutExpo }}
+          aria-hidden={item.id !== preview}
+          style={{ pointerEvents: "none" }}
+        >
+          <Image src={photos[item.img]} alt={item.label} fill priority sizes="100vw" className="object-cover" />
+        </motion.div>
       ))}
+    </>
+  );
+}
+
+function HighlightTabs({
+  preview,
+  setPreview,
+  tone,
+}: {
+  preview: (typeof highlights)[number]["id"];
+  setPreview: (id: (typeof highlights)[number]["id"]) => void;
+  tone: "dark" | "light";
+}) {
+  return (
+    <div className="flex gap-2 overflow-x-auto p-1 scrollbar-none">
+      {highlights.map((item) => {
+        const selected = item.id === preview;
+        return (
+          <button
+            key={item.id}
+            type="button"
+            onMouseEnter={() => setPreview(item.id)}
+            onFocus={() => setPreview(item.id)}
+            onClick={() => setPreview(item.id)}
+            className={`flex min-h-11 min-w-[7.5rem] shrink-0 items-center gap-3 rounded-full py-2 pr-4 pl-2 text-left transition ${
+              tone === "dark"
+                ? `glass-dark ${selected ? "ring-1 ring-white/70 ring-inset" : "opacity-80"}`
+                : selected
+                  ? "bg-sea text-paper"
+                  : "bg-paper-deep text-sea"
+            }`}
+          >
+            <span className="relative h-9 w-9 overflow-hidden rounded-full">
+              <Image src={photos[item.img]} alt="" fill sizes="36px" className="object-cover" />
+            </span>
+            <span className="text-xs font-semibold tracking-wide">{item.label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
 
 export function HeroSection() {
   const { openBooking } = useSite();
+  const [preview, setPreview] = useState<(typeof highlights)[number]["id"]>("terrace");
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  const stepHero = useCallback((dir: 1 | -1) => {
+    setPreview((current) => {
+      const index = highlights.findIndex((item) => item.id === current);
+      const next = (index + dir + highlights.length) % highlights.length;
+      return highlights[next].id;
+    });
+  }, []);
+
+  const tapHero = useCallback(
+    (event: PointerEvent) => {
+      const rect = heroRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      stepHero(event.clientX - rect.left < rect.width / 2 ? -1 : 1);
+    },
+    [stepHero],
+  );
+
+  useSwipeIndex(heroRef, {
+    count: highlights.length,
+    onSwipe: stepHero,
+    threshold: 36,
+    onTap: tapHero,
+  });
 
   return (
-    <section className="pt-4 md:pt-10 lg:pt-14">
-      <StoryChips />
-      <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:px-8">
-        <motion.div initial="hidden" animate="show" variants={stagger}>
-          <motion.span
-            variants={fadeInUp}
-            className="inline-flex items-center gap-2 rounded-full bg-sage px-4 py-1.5 text-[11px] font-bold tracking-[0.18em] text-white uppercase"
-          >
-            <Sun className="h-3.5 w-3.5" />
-            {copy.hero.badge}
-          </motion.span>
-          <motion.h1
-            variants={fadeInUp}
-            className="mt-5 font-display text-4xl font-semibold leading-[1.06] tracking-tight text-ink sm:text-5xl lg:text-[3.35rem]"
-          >
-            {copy.hero.heading}
-          </motion.h1>
-          <motion.p variants={fadeInUp} className="mt-4 max-w-md text-sm leading-relaxed text-muted lg:text-base">
-            {copy.hero.lead}
-          </motion.p>
-          <motion.div variants={fadeInUp} className="mt-7 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={openBooking}
-              className="inline-flex min-h-12 items-center justify-center rounded-full bg-terra px-6 text-sm font-bold text-white"
-            >
-              {copy.hero.ctaPrimary}
-            </button>
-            <a
-              href="#prostor"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-terra px-5 text-sm font-bold text-terra"
-            >
-              {copy.hero.ctaSecondary}
-              <ArrowDown className="size-4" />
-            </a>
-          </motion.div>
-          <motion.div variants={fadeInUp} className="mt-8 hidden grid-cols-4 gap-3 md:grid">
+    <section className="relative isolate overflow-x-hidden bg-paper md:bg-sea md:text-white">
+      <div className="md:hidden">
+        <div ref={heroRef} className="relative h-[50vh] min-h-[280px] touch-pan-y overflow-hidden bg-sea">
+          <HeroMedia preview={preview} />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-sea/35 to-transparent" />
+          <span className="pointer-events-none absolute top-20 left-4 z-10 rounded-full bg-white/20 px-3.5 py-1.5 text-[11px] font-semibold tracking-[0.14em] text-white uppercase backdrop-blur-md">
+            ✨ {site.name}
+          </span>
+          <span className="pointer-events-none absolute top-1/2 left-2 z-10 -translate-y-1/2 rounded-full bg-black/25 p-1.5 text-white/90">
+            <ChevronLeft className="size-5" />
+          </span>
+          <span className="pointer-events-none absolute top-1/2 right-2 z-10 -translate-y-1/2 rounded-full bg-black/25 p-1.5 text-white/90">
+            <ChevronRight className="size-5" />
+          </span>
+          <div className="absolute bottom-12 left-1/2 z-20 flex -translate-x-1/2 gap-1">
             {highlights.map((item) => (
-              <a
+              <button
                 key={item.id}
-                href={`#${item.target}`}
-                className="group flex flex-col items-center gap-2 transition duration-300 hover:-translate-y-1"
+                type="button"
+                aria-label={item.label}
+                onClick={() => setPreview(item.id)}
+                className="flex min-h-11 min-w-11 items-center justify-center"
               >
-                <RingPhoto src={photos[item.img]} alt={item.label} />
-                <span className="text-sm font-bold">{item.label}</span>
-              </a>
+                <span
+                  className={`block h-2.5 rounded-full transition-all ${
+                    preview === item.id ? "w-6 bg-white" : "w-2.5 bg-white/45"
+                  }`}
+                />
+              </button>
             ))}
-          </motion.div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.12 }}
-          className="relative"
-        >
-          <div className="relative overflow-hidden rounded-[2rem] shadow-[0_24px_60px_-28px_rgba(58,53,47,0.55)]">
-            <div className="relative aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/5] xl:aspect-[5/4]">
-              <Image
-                src={photos.balconySunset}
-                alt="Balkon u zlatnom satu — stolice, sto i brda iznad Babilonije"
-                fill
-                priority
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/45 via-transparent to-transparent" />
-              <span className="absolute bottom-4 left-4 rounded-full bg-paper/95 px-4 py-2 text-xs font-bold text-ink">
-                {copy.hero.chipWalk} · {copy.hero.chipBeach}
+          </div>
+        </div>
+        <div className="relative z-10 -mt-5 rounded-t-[1.75rem] bg-paper px-4 pt-6 pb-8 text-ink">
+          <h1 className="font-display text-[1.85rem] leading-[1.05] tracking-tight text-sea">
+            {copy.hero.heading}
+          </h1>
+          <p className="mt-3 text-sm leading-relaxed text-muted">{copy.hero.lead}</p>
+          <button
+            type="button"
+            onClick={openBooking}
+            className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-terra px-7 text-sm font-semibold text-white"
+          >
+            {copy.hero.ctaPrimary}
+          </button>
+          <div className="mt-5 flex flex-wrap justify-center gap-2">
+            {heroStats.map((item) => (
+              <span
+                key={item.id}
+                className="inline-flex min-h-9 items-center rounded-full bg-paper-deep px-3 text-[11px] font-semibold tracking-wide text-sea"
+              >
+                {item.value}
+                <span className="ml-1 font-medium text-muted">{item.label}</span>
               </span>
-            </div>
+            ))}
           </div>
-          <div className="absolute -bottom-6 left-4 hidden sm:block lg:-left-8">
-            <RingPhoto src={photos.bedroomLight} alt="Spavaća soba sa bež posteljinom i pampasom" size="lg" />
-          </div>
-          <div className="absolute -top-5 right-3 hidden sm:block">
-            <RingPhoto
-              src={photos.diningDaylight}
-              alt="Trpezarija u dnevnom svjetlu sa izlazom na balkon"
-              size="md"
-            />
-          </div>
-        </motion.div>
+        </div>
       </div>
 
-      <div className="mx-auto mt-14 grid max-w-6xl grid-cols-2 gap-3 px-4 sm:px-6 md:grid-cols-4 lg:mt-16 lg:px-8">
-        {heroStats.map((item) => (
-          <div
-            key={item.id}
-            className="rounded-[1.5rem] bg-white p-4 text-center shadow-[0_16px_40px_-30px_rgba(58,53,47,0.55)] lg:p-6"
+      <div className="relative hidden min-h-[100dvh] overflow-hidden md:block">
+        <HeroMedia preview={preview} />
+        <div className="absolute inset-0 bg-gradient-to-r from-sea/80 via-sea/45 to-sea/15" />
+        <div className="absolute inset-0 bg-gradient-to-t from-sea/80 via-transparent to-sea/25" />
+        <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-6xl flex-col justify-center px-6 pb-28 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: easeOutExpo }}
+            className="max-w-2xl"
           >
-            <div className="font-display text-xl font-semibold text-ink lg:text-2xl">{item.value}</div>
-            <div className="mt-1 truncate text-[11px] text-muted">{item.label}</div>
+            <div className="mb-6 flex flex-wrap gap-2">
+              <span className="glass-dark rounded-full px-4 py-2 text-[11px] font-semibold tracking-[0.16em] uppercase">
+                {copy.hero.chipWalk} 🌊
+              </span>
+              <span className="glass-dark rounded-full px-4 py-2 text-[11px] font-semibold tracking-[0.16em] uppercase">
+                {copy.hero.chipBeach} 🌅
+              </span>
+            </div>
+            <p className="text-[11px] font-semibold tracking-[0.22em] text-white/70 uppercase">{copy.hero.badge}</p>
+            <h1 className="mt-4 font-display text-5xl leading-[0.98] tracking-tight lg:text-7xl">{copy.hero.heading}</h1>
+            <p className="mt-5 max-w-lg text-sm leading-relaxed text-white/80 lg:text-base">{copy.hero.lead}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={openBooking}
+                className="inline-flex min-h-12 items-center rounded-full bg-terra px-7 text-sm font-semibold text-white shadow-[0_18px_40px_-18px_rgba(42,106,120,0.85)] transition hover:bg-terra-deep"
+              >
+                {copy.hero.ctaPrimary}
+              </button>
+              <a
+                href="#prostor"
+                className="glass-dark inline-flex min-h-12 items-center gap-2 rounded-full px-5 text-sm font-semibold"
+              >
+                {copy.hero.ctaSecondary}
+                <ArrowDown className="size-4" />
+              </a>
+            </div>
+          </motion.div>
+          <div className="mt-12">
+            <HighlightTabs preview={preview} setPreview={setPreview} tone="dark" />
           </div>
-        ))}
+          <div className="mt-6 grid grid-cols-4 gap-px overflow-hidden rounded-2xl glass-dark">
+            {heroStats.map((item) => (
+              <div key={item.id} className="px-3 py-3 text-center sm:px-4">
+                <div className="font-display text-lg text-white sm:text-xl">{item.value}</div>
+                <div className="mt-0.5 text-[10px] tracking-wide text-white/70 uppercase sm:text-[11px]">{item.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

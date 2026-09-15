@@ -22,3 +22,12 @@ export const stagger: Variants = {
     transition: { staggerChildren: 0.08, delayChildren: 0.06 },
   },
 };
+
+export const reveal: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: easeOutExpo },
+  },
+};

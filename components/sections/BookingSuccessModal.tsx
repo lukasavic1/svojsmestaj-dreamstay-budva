@@ -44,7 +44,7 @@ export function BookingSuccessModal({ open, receipt, onClose }: Props) {
     <AnimatePresence>
       {open ? (
         <motion.div
-          className="fixed inset-0 z-[110] flex items-end justify-center sm:items-center sm:p-6"
+          className="fixed inset-0 z-[110] flex items-end justify-center sm:items-center sm:p-5"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -52,84 +52,76 @@ export function BookingSuccessModal({ open, receipt, onClose }: Props) {
           <button
             type="button"
             aria-label={copy.booking.close}
-            className="absolute inset-0 bg-ink/70 backdrop-blur-md"
+            className="absolute inset-0 bg-sea/78 backdrop-blur-md"
             onClick={onClose}
           />
           <motion.div
             role="dialog"
             aria-modal="true"
             aria-labelledby="booking-success-title"
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 16 }}
-            transition={{ duration: 0.36, ease: easeOutExpo }}
-            className="relative z-10 max-h-[92dvh] w-full overflow-y-auto rounded-t-[2rem] border-t-4 border-terra bg-paper px-6 py-8 shadow-2xl sm:max-w-lg sm:rounded-[2rem] sm:px-8"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 12 }}
+            transition={{ duration: 0.32, ease: easeOutExpo }}
+            className="relative z-10 max-h-[92dvh] w-full overflow-y-auto rounded-t-[1.6rem] bg-paper shadow-[0_40px_80px_-28px_rgba(16,40,48,0.55)] sm:max-w-lg sm:rounded-[1.6rem]"
           >
-            <div className="flex justify-center">
-              <span className="relative grid size-16 place-items-center">
-                <motion.span
-                  className="absolute inset-0 rounded-full bg-terra/35"
-                  animate={{ scale: [1, 1.15, 1], opacity: [0.55, 0.15, 0.55] }}
-                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                />
-                <span className="relative grid size-14 place-items-center rounded-full bg-terra text-white shadow-lg shadow-terra/30">
-                  <Check className="size-7 stroke-[2.5]" />
-                </span>
+            <div className="bg-sea px-6 py-8 text-paper">
+              <span className="grid size-11 place-items-center rounded-full bg-terra">
+                <Check className="size-5 stroke-[2.4]" />
               </span>
+              <h3 id="booking-success-title" className="mt-5 font-display text-3xl leading-none tracking-tight">
+                {copy.booking.successTitle}
+              </h3>
+              <p className="mt-3 max-w-md text-sm leading-relaxed text-paper/75">{copy.booking.successBody}</p>
             </div>
 
-            <h3 id="booking-success-title" className="mt-5 text-center font-display text-2xl text-ink md:text-3xl">
-              {copy.booking.successTitle}
-            </h3>
-            <p className="mx-auto mt-3 max-w-md text-center text-sm leading-relaxed text-muted md:text-base">
-              {copy.booking.successBody}
-            </p>
-
             {receipt ? (
-              <div className="mt-6 space-y-2.5 rounded-[1.5rem] border border-ink/8 bg-white px-4 py-4 text-left text-sm">
-                <p className="flex justify-between gap-4">
+              <div className="divide-y divide-sea/8 border-y border-sea/8 bg-white px-6 py-2 text-sm">
+                <p className="flex justify-between gap-4 py-3">
                   <span className="text-muted">{copy.booking.apartment}</span>
                   <span className="font-semibold text-ink">{receipt.apartmentName}</span>
                 </p>
-                <p className="flex justify-between gap-4">
+                <p className="flex justify-between gap-4 py-3">
                   <span className="text-muted">{copy.booking.summaryPeriod}</span>
                   <span className="text-right font-semibold text-ink">{receipt.period}</span>
                 </p>
-                <p className="flex justify-between gap-4">
+                <p className="flex justify-between gap-4 py-3">
                   <span className="text-muted">{copy.booking.summaryGuests}</span>
                   <span className="font-semibold text-ink">{receipt.guests}</span>
                 </p>
               </div>
             ) : null}
 
-            {hasHostPhone() ? (
-              <a
-                href={telHref()}
-                className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-terra text-[0.72rem] font-bold tracking-[0.1em] text-white uppercase transition hover:scale-[1.02]"
+            <div className="px-6 py-5">
+              {hasHostPhone() ? (
+                <a
+                  href={telHref()}
+                  className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-sea text-[0.68rem] font-semibold tracking-[0.14em] text-paper uppercase hover:bg-terra"
+                >
+                  <Phone className="size-4" />
+                  {copy.booking.successCall}
+                  {site.contact.phoneDisplay ? ` · ${site.contact.phoneDisplay}` : ""}
+                </a>
+              ) : null}
+              {hasWhatsApp() ? (
+                <a
+                  href={whatsappHref(receipt?.whatsappText)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-2 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-sea/20 text-[0.68rem] font-semibold tracking-[0.14em] text-sea uppercase hover:bg-paper-deep"
+                >
+                  <WhatsAppIcon className="size-4" />
+                  {copy.booking.successWhatsapp}
+                </a>
+              ) : null}
+              <button
+                type="button"
+                onClick={onClose}
+                className="mt-2 inline-flex h-12 w-full items-center justify-center text-[0.68rem] font-semibold tracking-[0.14em] text-muted uppercase hover:text-sea"
               >
-                <Phone className="size-4" />
-                {copy.booking.successCall}
-                {site.contact.phoneDisplay ? ` · ${site.contact.phoneDisplay}` : ""}
-              </a>
-            ) : null}
-            {hasWhatsApp() ? (
-              <a
-                href={whatsappHref(receipt?.whatsappText)}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-2 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border-2 border-terra text-[0.72rem] font-bold tracking-[0.1em] text-terra uppercase transition hover:bg-paper-deep"
-              >
-                <WhatsAppIcon className="size-4" />
-                {copy.booking.successWhatsapp}
-              </a>
-            ) : null}
-            <button
-              type="button"
-              onClick={onClose}
-              className="mt-2 inline-flex h-12 w-full items-center justify-center rounded-full border border-ink/10 text-[0.72rem] font-bold tracking-[0.1em] uppercase transition hover:bg-white"
-            >
-              {copy.booking.close}
-            </button>
+                {copy.booking.close}
+              </button>
+            </div>
           </motion.div>
         </motion.div>
       ) : null}

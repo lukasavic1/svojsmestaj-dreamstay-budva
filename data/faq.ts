@@ -24,7 +24,7 @@ export const faqs = [
   {
     id: "pets",
     question: "Da li su kućni ljubimci dozvoljeni?",
-    answer: "Da. Stan je nenapušen. Ljubimce navedite u upitu da se dogovorimo oko boravka.",
+    answer: "Da. Pušenje je samo napolju. Ljubimce navedite u upitu da se dogovorimo oko boravka.",
   },
   {
     id: "price",

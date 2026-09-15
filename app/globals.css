@@ -1,19 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #f7f4ef;
-  --paper-deep: #f1ebe1;
-  --terra: #c4703f;
-  --sage: #7c8b6f;
-  --ink: #3a352f;
-  --muted: #6b6255;
+  --paper: #f3f6f8;
+  --paper-deep: #e3eaef;
+  --terra: #2a6a78;
+  --terra-deep: #174a56;
+  --sage: #62747a;
+  --sea: #102830;
+  --ink: #102830;
+  --muted: #5a6c72;
+  --glass: rgba(243, 246, 248, 0.62);
 }
 
 @theme inline {
   --color-paper: var(--paper);
   --color-paper-deep: var(--paper-deep);
   --color-terra: var(--terra);
+  --color-terra-deep: var(--terra-deep);
   --color-sage: var(--sage);
+  --color-sea: var(--sea);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --font-display: var(--font-display);
@@ -24,6 +29,7 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 5.5rem;
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -31,18 +37,21 @@ body {
   color: var(--ink);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 h1,
 h2,
 h3 {
-  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
   text-wrap: balance;
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--terra) 32%, white);
-  color: var(--ink);
+  background: color-mix(in srgb, var(--terra) 28%, white);
+  color: var(--sea);
 }
 
 img {
@@ -52,6 +61,51 @@ img {
 button,
 a {
   touch-action: manipulation;
+}
+
+.glass {
+  background: var(--glass);
+  border: 1px solid rgba(255, 255, 255, 0.46);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.glass-dark {
+  background: rgba(16, 40, 48, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.ken-burns {
+  animation: ken-burns 8s linear forwards;
+}
+
+@keyframes ken-burns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.film-strip::-webkit-scrollbar {
+  height: 6px;
+}
+
+.film-strip::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--terra) 55%, transparent);
+  border-radius: 99px;
 }
 
 @media (prefers-reduced-motion: reduce) {

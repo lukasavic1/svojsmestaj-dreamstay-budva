@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
-import { Fraunces, Outfit } from "next/font/google";
+import { Syne, Plus_Jakarta_Sans } from "next/font/google";
 import { BUSINESS_NAME } from "@/config";
 import { site } from "@/data/site";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 
-const display = Fraunces({
+const display = Syne({
   subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["500", "600", "700", "800"],
   display: "swap",
   variable: "--font-display",
 });
 
-const sans = Outfit({
+const sans = Plus_Jakarta_Sans({
   subsets: ["latin", "latin-ext"],
   weight: ["400", "500", "600", "700"],
   display: "swap",

@@ -4,12 +4,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Minus, Plus, X } from "lucide-react";
 import type { Photo } from "@/types/photo";
 import { copy } from "@/data/copy";
 import { useSwipeIndex } from "@/hooks/useSwipeIndex";
 import { useIsClient } from "@/hooks/useIsClient";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+
+const ZOOM_MIN = 1;
+const ZOOM_MAX = 2.5;
+const ZOOM_STEP = 0.5;
 
 type Props = {
   open: boolean;
@@ -17,17 +21,36 @@ type Props = {
   photos: Photo[];
   onClose: () => void;
   startIndex?: number;
+  onIndexChange?: (index: number) => void;
 };
 
-export function GalleryLightbox({ open, title, photos, onClose, startIndex = 0 }: Props) {
+export function GalleryLightbox({
+  open,
+  title,
+  photos,
+  onClose,
+  startIndex = 0,
+  onIndexChange,
+}: Props) {
   const mounted = useIsClient();
   const [index, setIndex] = useState(startIndex);
+  const [zoom, setZoom] = useState(ZOOM_MIN);
   const stageRef = useRef<HTMLDivElement>(null);
   const count = photos.length;
 
+  const wasOpen = useRef(false);
+
   useEffect(() => {
-    if (open) setIndex(startIndex);
+    if (open && !wasOpen.current) {
+      setIndex(startIndex);
+      setZoom(ZOOM_MIN);
+    }
+    wasOpen.current = open;
   }, [open, startIndex]);
+
+  useEffect(() => {
+    setZoom(ZOOM_MIN);
+  }, [index]);
 
   const step = useCallback(
     (dir: 1 | -1) => {
@@ -36,8 +59,20 @@ export function GalleryLightbox({ open, title, photos, onClose, startIndex = 0 }
     [count],
   );
 
+  const zoomBy = useCallback((dir: 1 | -1) => {
+    setZoom((value) => {
+      const next = value + dir * ZOOM_STEP;
+      return Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, next));
+    });
+  }, []);
+
   useSwipeIndex(stageRef, { count, onSwipe: step });
   useBodyScrollLock(open);
+
+  useEffect(() => {
+    if (!open) return;
+    onIndexChange?.(index);
+  }, [open, index, onIndexChange]);
 
   useEffect(() => {
     if (!open) return;
@@ -45,10 +80,12 @@ export function GalleryLightbox({ open, title, photos, onClose, startIndex = 0 }
       if (e.key === "Escape") onClose();
       if (e.key === "ArrowRight") step(1);
       if (e.key === "ArrowLeft") step(-1);
+      if (e.key === "+" || e.key === "=") zoomBy(1);
+      if (e.key === "-" || e.key === "_") zoomBy(-1);
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [open, onClose, step]);
+  }, [open, onClose, step, zoomBy]);
 
   if (!mounted) return null;
   const current = photos[index];
@@ -66,21 +103,52 @@ export function GalleryLightbox({ open, title, photos, onClose, startIndex = 0 }
             <div>
               <p className="font-display text-lg sm:text-xl">{title}</p>
               <p className="text-xs text-white/60">
-                {index + 1} / {count}
+                {index + 1} {copy.gallery.of} {count}
               </p>
             </div>
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label={copy.gallery.close}
-              className="grid size-10 place-items-center rounded-full bg-white/10 hover:bg-white/20"
-            >
-              <X className="size-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => zoomBy(-1)}
+                disabled={zoom <= ZOOM_MIN}
+                aria-label={copy.gallery.zoomOut}
+                className="grid size-10 place-items-center rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-35"
+              >
+                <Minus className="size-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => zoomBy(1)}
+                disabled={zoom >= ZOOM_MAX}
+                aria-label={copy.gallery.zoomIn}
+                className="grid size-10 place-items-center rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-35"
+              >
+                <Plus className="size-4" />
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label={copy.gallery.close}
+                className="grid size-10 place-items-center rounded-full bg-white/10 hover:bg-white/20"
+              >
+                <X className="size-5" />
+              </button>
+            </div>
           </div>
 
-          <div ref={stageRef} className="relative mx-auto min-h-[50vh] w-full max-w-5xl flex-1 px-12 sm:px-16">
-            <Image src={current.src} alt={current.alt} fill sizes="100vw" className="object-contain" priority />
+          <div
+            ref={stageRef}
+            className={`relative mx-auto min-h-[50vh] w-full max-w-5xl flex-1 px-12 sm:px-16 ${
+              zoom > 1 ? "overflow-auto" : "overflow-hidden"
+            }`}
+          >
+            <motion.div
+              className="absolute inset-0"
+              animate={{ scale: zoom }}
+              transition={{ type: "spring", stiffness: 260, damping: 28 }}
+            >
+              <Image src={current.src} alt={current.alt} fill sizes="100vw" className="object-contain" priority />
+            </motion.div>
             {count > 1 ? (
               <>
                 <button

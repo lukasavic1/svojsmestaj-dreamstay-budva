@@ -48,7 +48,7 @@ export function Modal({
 
   return createPortal(
     <div
-      className={`fixed inset-0 z-[100] flex items-end justify-center sm:items-center sm:p-6 ${
+      className={`fixed inset-0 z-[100] flex items-end justify-center sm:items-center sm:p-5 ${
         open ? "" : "pointer-events-none"
       }`}
       aria-hidden={!open}
@@ -58,8 +58,8 @@ export function Modal({
         aria-label={closeLabel}
         initial={false}
         animate={{ opacity: open ? 1 : 0 }}
-        transition={{ duration: 0.15 }}
-        className="absolute inset-0 bg-ink/45"
+        transition={{ duration: 0.18 }}
+        className="absolute inset-0 bg-sea/72 backdrop-blur-[6px]"
         onClick={onClose}
         tabIndex={open ? 0 : -1}
       />
@@ -69,26 +69,24 @@ export function Modal({
         inert={!open ? true : undefined}
         aria-labelledby={titleId}
         initial={false}
-        animate={{ opacity: open ? 1 : 0, y: open ? 0 : 10 }}
-        transition={{ duration: 0.18, ease: easeOutExpo }}
-        className={`relative z-10 flex max-h-[92dvh] w-full min-h-0 flex-col overflow-hidden rounded-t-[2rem] bg-paper shadow-[0_24px_60px_-28px_rgba(58,53,47,0.45)] sm:rounded-[2rem] ${
-          wide ? "sm:max-w-5xl" : "sm:max-w-xl"
+        animate={{ opacity: open ? 1 : 0, y: open ? 0 : 14 }}
+        transition={{ duration: 0.22, ease: easeOutExpo }}
+        className={`relative z-10 flex max-h-[92dvh] w-full min-h-0 flex-col overflow-hidden rounded-t-[1.6rem] bg-paper shadow-[0_40px_80px_-28px_rgba(16,40,48,0.55)] sm:rounded-[1.6rem] ${
+          wide ? "sm:max-w-5xl" : "sm:max-w-lg"
         }`}
       >
-        <div className="flex shrink-0 items-center justify-between gap-4 border-b border-ink/8 px-5 py-4 sm:px-7">
-          <h2 id={titleId} className={`font-display text-2xl text-ink ${titleHidden ? "sr-only" : ""}`}>
-            {title}
-          </h2>
-          <button
-            ref={closeRef}
-            type="button"
-            onClick={onClose}
-            aria-label={closeLabel}
-            className="inline-flex size-11 items-center justify-center rounded-full text-ink/70 transition hover:bg-white hover:text-ink"
-          >
-            <X className="size-5" />
-          </button>
-        </div>
+        <h2 id={titleId} className={`px-5 pt-5 font-display text-2xl text-ink ${titleHidden ? "sr-only" : "pr-16"}`}>
+          {title}
+        </h2>
+        <button
+          ref={closeRef}
+          type="button"
+          onClick={onClose}
+          aria-label={closeLabel}
+          className="absolute top-3 right-3 z-30 grid size-10 place-items-center rounded-full bg-sea text-paper transition hover:bg-terra"
+        >
+          <X className="size-4" strokeWidth={2.2} />
+        </button>
         <div data-modal-scroll className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
           {children}
         </div>

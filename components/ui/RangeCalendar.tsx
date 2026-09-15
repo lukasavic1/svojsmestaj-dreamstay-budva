@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { AvailabilityPayload, YearMonth } from "@/types/calendar";
 import {
   asMonthIndex,
@@ -51,13 +52,13 @@ function MonthGrid({
 
   return (
     <div>
-      <h3 id={labelledBy} className="mb-3 font-display text-xl text-ink">
+      <h3 id={labelledBy} className="mb-4 font-display text-xl tracking-tight text-ink">
         {copy.calendar.months[month]} {year}.
       </h3>
-      <div className="grid grid-cols-7 gap-1.5" role="grid" aria-labelledby={labelledBy}>
+      <div className="grid grid-cols-7 gap-px bg-sea/8" role="grid" aria-labelledby={labelledBy}>
         {copy.calendar.days.map((d, i) => (
           <div
-            className="pb-1 text-center text-[0.68rem] font-semibold tracking-wide text-muted uppercase"
+            className="bg-paper pb-2 text-center text-[0.62rem] font-semibold tracking-[0.14em] text-muted uppercase"
             role="columnheader"
             key={`${labelledBy}-${d}-${i}`}
           >
@@ -65,7 +66,7 @@ function MonthGrid({
           </div>
         ))}
         {Array.from({ length: offset }, (_, i) => (
-          <div key={`${labelledBy}-e-${i}`} className="min-h-11 sm:min-h-12" />
+          <div key={`${labelledBy}-e-${i}`} className="min-h-10 bg-paper sm:min-h-11" />
         ))}
         {Array.from({ length: totalDays }, (_, i) => {
           const day = i + 1;
@@ -86,16 +87,16 @@ function MonthGrid({
                 booked ? copy.calendar.busy : copy.calendar.free
               }`}
               onClick={() => onPick(iso, booked)}
-              className={`grid min-h-11 w-full place-items-center rounded-xl text-sm font-semibold transition sm:min-h-12 ${
+              className={`grid min-h-10 w-full place-items-center rounded-lg text-sm font-medium transition sm:min-h-11 ${
                 booked
-                  ? "cursor-not-allowed bg-paper-deep text-muted/50 line-through"
+                  ? "cursor-not-allowed bg-paper-deep text-muted/45 line-through"
                   : past
-                    ? "cursor-not-allowed text-muted/35"
+                    ? "cursor-not-allowed bg-paper text-muted/30"
                     : endpoint
-                      ? "bg-terra text-white shadow-sm"
+                      ? "bg-sea text-paper"
                       : inRange
-                        ? "bg-terra/12 text-terra"
-                        : "border border-sage/25 bg-sage/8 text-ink hover:bg-sage/16"
+                        ? "bg-terra/15 text-sea"
+                        : "bg-paper text-ink hover:bg-terra/10"
               }`}
             >
               {day}
@@ -103,7 +104,7 @@ function MonthGrid({
           );
         })}
         {Array.from({ length: Math.max(0, trailing) }, (_, i) => (
-          <div key={`${labelledBy}-t-${i}`} className="min-h-11 sm:min-h-12" />
+          <div key={`${labelledBy}-t-${i}`} className="min-h-10 bg-paper sm:min-h-11" />
         ))}
       </div>
     </div>
@@ -165,36 +166,37 @@ export function RangeCalendar({ availability, checkIn, checkOut, onChange }: Pro
   };
 
   return (
-    <div className="w-full rounded-[2rem] border border-ink/8 bg-white/80 p-4 sm:p-6">
-      <div className="mb-4 flex items-center justify-end gap-2">
-        <button
-          type="button"
-          onClick={() => setCursor(shiftMonth(cursor, -1))}
-          disabled={atFirst}
-          aria-label={copy.calendar.prevMonth}
-          className="grid size-10 place-items-center rounded-full border border-ink/10 text-lg text-ink disabled:opacity-30"
+    <div className="w-full rounded-2xl bg-white p-4 sm:p-5">
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <p
+          className={`min-h-[2.5rem] flex-1 px-0 py-1 text-sm font-medium ${
+            error ? "text-red-800" : "text-muted"
+          }`}
+          role={error ? "alert" : undefined}
         >
-          ‹
-        </button>
-        <button
-          type="button"
-          onClick={() => setCursor(shiftMonth(cursor, 1))}
-          disabled={atLast}
-          aria-label={copy.calendar.nextMonth}
-          className="grid size-10 place-items-center rounded-full border border-ink/10 text-lg text-ink disabled:opacity-30"
-        >
-          ›
-        </button>
+          {hint}
+        </p>
+        <div className="flex gap-1">
+          <button
+            type="button"
+            onClick={() => setCursor(shiftMonth(cursor, -1))}
+            disabled={atFirst}
+            aria-label={copy.calendar.prevMonth}
+            className="grid size-9 place-items-center rounded-full border border-sea/12 text-sea disabled:opacity-30"
+          >
+            <ChevronLeft className="size-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setCursor(shiftMonth(cursor, 1))}
+            disabled={atLast}
+            aria-label={copy.calendar.nextMonth}
+            className="grid size-9 place-items-center rounded-full border border-sea/12 text-sea disabled:opacity-30"
+          >
+            <ChevronRight className="size-4" />
+          </button>
+        </div>
       </div>
-
-      <p
-        className={`mb-4 min-h-[2.75rem] rounded-xl border px-3 py-2 text-sm font-medium ${
-          error ? "border-red-400 bg-red-50 text-red-800" : "border-terra/40 bg-terra/10 text-ink"
-        }`}
-        role={error ? "alert" : undefined}
-      >
-        {hint}
-      </p>
 
       <div className="grid gap-8 lg:grid-cols-2">
         <MonthGrid
@@ -225,15 +227,15 @@ export function RangeCalendar({ availability, checkIn, checkOut, onChange }: Pro
 
       <div className="mt-5 flex flex-wrap gap-5 text-xs text-muted">
         <span className="inline-flex items-center gap-1.5">
-          <i className="size-3 rounded-md border border-sage/25 bg-sage/10" aria-hidden="true" />
+          <i className="size-3 border border-sea/15 bg-paper" aria-hidden="true" />
           {copy.calendar.free}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <i className="size-3 rounded-md bg-paper-deep" aria-hidden="true" />
+          <i className="size-3 bg-paper-deep" aria-hidden="true" />
           {copy.calendar.busy}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <i className="size-3 rounded-md bg-terra" aria-hidden="true" />
+          <i className="size-3 bg-sea" aria-hidden="true" />
           {copy.calendar.selected}
         </span>
       </div>
