@@ -159,11 +159,11 @@ export function HeroSection() {
         </div>
       </div>
 
-      <div className="relative hidden min-h-[100dvh] overflow-hidden md:block">
+      <div className="relative hidden min-h-[100dvh] overflow-x-hidden md:block">
         <HeroMedia preview={preview} />
         <div className="absolute inset-0 bg-gradient-to-r from-sea/80 via-sea/45 to-sea/15" />
         <div className="absolute inset-0 bg-gradient-to-t from-sea/80 via-transparent to-sea/25" />
-        <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-6xl flex-col justify-center px-6 pb-28 lg:px-8">
+        <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-6xl flex-col justify-start px-6 pt-28 pb-16 lg:px-8 lg:pt-32 lg:pb-24 xl:justify-center">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
@@ -198,7 +198,7 @@ export function HeroSection() {
               </a>
             </div>
           </motion.div>
-          <div className="mt-12">
+          <div className="mt-8 lg:mt-12">
             <HighlightTabs preview={preview} setPreview={setPreview} tone="dark" />
           </div>
           <div className="mt-6 grid grid-cols-4 gap-px overflow-hidden rounded-2xl glass-dark">

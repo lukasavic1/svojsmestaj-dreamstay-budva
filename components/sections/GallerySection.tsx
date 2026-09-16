@@ -102,6 +102,10 @@ export function GallerySection() {
     const scroller = stripRef.current;
     const node = scroller?.querySelector<HTMLElement>(`[data-thumb="${activeIndex}"]`);
     if (!scroller || !node) return;
+    if (activeIndex === 0) {
+      scroller.scrollTo({ left: 0, behavior: reduceMotion ? "auto" : "smooth" });
+      return;
+    }
     const left = node.offsetLeft - scroller.clientWidth / 2 + node.clientWidth / 2;
     scroller.scrollTo({ left: Math.max(0, left), behavior: reduceMotion ? "auto" : "smooth" });
   }, [activeIndex, filter, reduceMotion]);
@@ -316,8 +320,9 @@ export function GallerySection() {
 
             <div
               ref={stripRef}
-              className="film-strip scrollbar-none flex min-w-0 flex-1 snap-x snap-mandatory gap-2.5 overflow-x-auto scroll-smooth py-3 pr-3 pl-3 sm:gap-3"
+              className="film-strip scrollbar-none min-w-0 flex-1 overflow-x-auto scroll-smooth"
             >
+              <div className="flex w-max gap-2.5 py-2 pr-3 pl-2 sm:gap-3">
               {filtered.map((photo, index) => {
                 const active = index === activeIndex;
                 const color = PERIOD_TINT[periodOf(photo)];
@@ -328,9 +333,11 @@ export function GallerySection() {
                     data-thumb={index}
                     onClick={() => setActiveIndex(index)}
                     whileHover={{ y: -3 }}
-                    className="group relative h-14 w-16 shrink-0 snap-start overflow-hidden rounded-2xl sm:h-24 sm:w-32"
+                    className="group relative h-14 w-16 shrink-0 overflow-hidden rounded-2xl sm:h-24 sm:w-32"
                     style={{
-                      boxShadow: active ? `0 0 0 2px ${color}, 0 12px 24px -10px ${color}` : "0 0 0 1px rgba(16,40,48,0.08)",
+                      outline: active ? `2px solid ${color}` : "1px solid rgba(16,40,48,0.12)",
+                      outlineOffset: "-2px",
+                      boxShadow: active ? `0 10px 18px -12px ${color}` : undefined,
                     }}
                     aria-current={active}
                     aria-label={photoTitle(photo)}
@@ -356,6 +363,7 @@ export function GallerySection() {
                   </motion.button>
                 );
               })}
+              </div>
             </div>
           </div>
         </motion.div>
