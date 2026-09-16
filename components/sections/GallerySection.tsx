@@ -240,15 +240,13 @@ export function GallerySection() {
               }}
             />
 
-            <div className="pointer-events-none absolute inset-0 z-[2] flex flex-col justify-between p-4 sm:p-6">
-              <div className="glass-dark pointer-events-none w-fit max-w-[min(100%,28rem)] rounded-full px-3.5 py-1.5 text-white">
-                <p className="text-xs font-semibold tracking-wide sm:text-sm">{badge}</p>
-              </div>
-
-              <div className="pointer-events-auto flex items-end justify-between gap-3">
-                <p className="glass-dark min-w-0 max-w-xl line-clamp-2 rounded-2xl px-4 py-3 text-sm leading-relaxed text-white/90 sm:line-clamp-none">
-                  {current.alt}
-                </p>
+            <div className="pointer-events-none absolute inset-0 z-[2] flex flex-col justify-between gap-3 p-3 sm:p-6">
+              <div className="pointer-events-auto flex items-start justify-between gap-2">
+                <div className="glass-dark min-w-0 flex-1 rounded-2xl px-3 py-1.5 text-white sm:px-3.5">
+                  <p className="text-[11px] font-semibold leading-snug tracking-wide break-words sm:text-sm">
+                    {badge}
+                  </p>
+                </div>
                 <button
                   type="button"
                   onClick={() => setOpen(true)}
@@ -258,6 +256,10 @@ export function GallerySection() {
                   <Maximize2 className="size-4" strokeWidth={2.2} />
                 </button>
               </div>
+
+              <p className="glass-dark w-full rounded-2xl px-3 py-2.5 text-xs leading-relaxed break-words text-white/90 sm:max-w-xl sm:px-4 sm:py-3 sm:text-sm">
+                {current.alt}
+              </p>
             </div>
 
             {(current.hotspots ?? []).map((spot) => {
@@ -314,7 +316,7 @@ export function GallerySection() {
 
             <div
               ref={stripRef}
-              className="film-strip scrollbar-none flex min-w-0 flex-1 snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth py-2 pr-1 pl-0.5"
+              className="film-strip scrollbar-none flex min-w-0 flex-1 snap-x snap-mandatory gap-2.5 overflow-x-auto scroll-smooth py-3 pr-3 pl-3 sm:gap-3"
             >
               {filtered.map((photo, index) => {
                 const active = index === activeIndex;
@@ -325,10 +327,8 @@ export function GallerySection() {
                     type="button"
                     data-thumb={index}
                     onClick={() => setActiveIndex(index)}
-                    whileHover={{ y: -4 }}
-                    animate={{ scale: active ? 1.05 : 1 }}
-                    transition={{ type: "spring", stiffness: 380, damping: 28 }}
-                    className="group relative h-14 w-16 shrink-0 snap-center overflow-hidden rounded-2xl sm:h-24 sm:w-32"
+                    whileHover={{ y: -3 }}
+                    className="group relative h-14 w-16 shrink-0 snap-start overflow-hidden rounded-2xl sm:h-24 sm:w-32"
                     style={{
                       boxShadow: active ? `0 0 0 2px ${color}, 0 12px 24px -10px ${color}` : "0 0 0 1px rgba(16,40,48,0.08)",
                     }}
